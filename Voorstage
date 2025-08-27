@@ -1,0 +1,113 @@
+@page "/register"
+@using System.ComponentModel.DataAnnotations
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header text-center bg-primary text-white">
+                    <h3>📝 تسجيل حساب جديد</h3>
+                </div>
+                <div class="card-body p-4">
+                    <EditForm Model="@user" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label class="form-label">الإيميل</label>
+                            <InputText @bind-Value="user.Email" class="form-control" placeholder="example@email.com" />
+                            <ValidationMessage For="@(() => user.Email)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">الاسم</label>
+                            <InputText @bind-Value="user.FirstName" class="form-control" placeholder="أدخل اسمك" />
+                            <ValidationMessage For="@(() => user.FirstName)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">اسم العائلة</label>
+                            <InputText @bind-Value="user.LastName" class="form-control" placeholder="أدخل اسم العائلة" />
+                            <ValidationMessage For="@(() => user.LastName)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">العمر</label>
+                            <InputNumber @bind-Value="user.Age" class="form-control" placeholder="مثال: 24" />
+                            <ValidationMessage For="@(() => user.Age)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">البلد</label>
+                            <InputSelect @bind-Value="user.Country" class="form-select">
+                                <option value="">-- اختر بلدك --</option>
+                                <option value="Palestine">🇵🇸 فلسطين</option>
+                                <option value="Morocco">🇲🇦 المغرب</option>
+                                <option value="Egypt">🇪🇬 مصر</option>
+                                <option value="Jordan">🇯🇴 الأردن</option>
+                                <option value="Saudi Arabia">🇸🇦 السعودية</option>
+                                <option value="Other">🌍 أخرى</option>
+                            </InputSelect>
+                            <ValidationMessage For="@(() => user.Country)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">الجنس</label>
+                            <div class="form-check">
+                                <InputRadio @bind-Value="user.Gender" Value="Male" class="form-check-input" id="male" />
+                                <label class="form-check-label" for="male">ذكر</label>
+                            </div>
+                            <div class="form-check">
+                                <InputRadio @bind-Value="user.Gender" Value="Female" class="form-check-input" id="female" />
+                                <label class="form-check-label" for="female">أنثى</label>
+                            </div>
+                            <ValidationMessage For="@(() => user.Gender)" class="text-danger" />
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">🚀 تسجيل</button>
+                    </EditForm>
+
+                    @if (submitted)
+                    {
+                        <div class="alert alert-success mt-4 text-center">
+                            ✅ تم التسجيل بنجاح! أهلاً <b>@user.FirstName @user.LastName</b> من <b>@user.Country</b>.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private UserModel user = new UserModel();
+    private bool submitted = false;
+
+    private void HandleValidSubmit()
+    {
+        submitted = true;
+        // لاحقًا: احفظ البيانات بقاعدة البيانات أو أرسلها لـ API
+    }
+
+    public class UserModel
+    {
+        [Required(ErrorMessage = "الإيميل مطلوب")]
+        [EmailAddress(ErrorMessage = "الإيميل غير صحيح")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "الاسم مطلوب")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "اسم العائلة مطلوب")]
+        public string LastName { get; set; }
+
+        [Range(10, 120, ErrorMessage = "العمر يجب أن يكون بين 10 و 120")]
+        public int Age { get; set; }
+
+        [Required(ErrorMessage = "اختر بلدك")]
+        public string Country { get; set; }
+
+        [Required(ErrorMessage = "اختر الجنس")]
+        public string Gender { get; set; }
+    }
+}
